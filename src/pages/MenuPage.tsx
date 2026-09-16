@@ -76,7 +76,7 @@ export default function MenuPage() {
             <img
               src={BRAND.logoUrl}
               alt="Health Fuel monogram"
-              className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+              className="w-16 h-16 sm:w-22 sm:h-22 object-contain"
             />
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
               <span className="text-avocado-500">Health</span>{' '}

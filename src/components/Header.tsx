@@ -28,8 +28,9 @@ export default function Header({ showBack = false }: HeaderProps) {
                 className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover ring-1 ring-avocado-500/20"
               />
               <div className="flex flex-col">
-                <span className="text-cream-50 font-bold text-base sm:text-lg tracking-tight leading-none">
-                  {BRAND.name}
+                <span className="font-bold text-base sm:text-lg tracking-tight leading-none">
+                  <span className="text-avocado-500">Health</span>{' '}
+                  <span className="text-cream-100">Fuel</span>
                 </span>
                 <span className="text-cream-100/40 text-2xs sm:text-[0.625rem] font-medium tracking-[0.15em] uppercase mt-1">
                   Curated Nutrition
