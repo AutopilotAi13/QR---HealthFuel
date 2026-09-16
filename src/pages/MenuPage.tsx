@@ -155,8 +155,9 @@ export default function MenuPage() {
       </main>
 
       <footer className="max-w-content mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-8 border-t border-charcoal-700/30">
-        <p className="text-cream-50 text-sm font-bold tracking-[0.15em] uppercase text-center">
-          {BRAND.name.toUpperCase()}
+        <p className="text-sm font-bold tracking-[0.15em] uppercase text-center">
+          <span className="text-avocado-500">HEALTH</span>{' '}
+          <span className="text-cream-100">FUEL</span>
         </p>
         <p className="text-cream-100/30 text-xs font-medium tracking-[0.2em] uppercase text-center mt-1.5">
           {BRAND.tagline}
