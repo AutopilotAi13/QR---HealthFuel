@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: 'Satoshi';
+    src: url('https://cdn.fontshare.cc/wf/KX1KGQXWJZJQFQZHFNV7Q5NHEU2JVTFK/BLAOKSJGQ5YTLRZVUWUPZ2LXRX6M6TYX.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Satoshi';
+    src: url('https://cdn.fontshare.cc/wf/KX1KGQXWJZJQFQZHFNV7Q5NHEU2JVTFK/3ZPVCMQ3NWQXWJZJQ5NHEU2JVTFK.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Satoshi';
+    src: url('https://cdn.fontshare.cc/wf/KX1KGQXWJZJQFQZHFNV7Q5NHEU2JVTFK/CMQ3NWQXWJZJQ5NHEU2JVTFK.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Satoshi';
+    src: url('https://cdn.fontshare.cc/wf/KX1KGQXWJZJQFQZHFNV7Q5NHEU2JVTFK/BLAOKSJGQ5YTLRZVUWUPZ2LXRX6M6TYX.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-charcoal-800 text-cream-100 font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    @apply bg-avocado-500/30 text-cream-50;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-charcoal-600 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-avocado-700;
+  }
+
+  /* Hide scrollbar for horizontal nav */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Focus styles for keyboard accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-avocado-400 ring-offset-2 ring-offset-charcoal-800 rounded-sm;
+  }
+}
+
+@layer components {
+  .divider-thin {
+    @apply border-charcoal-700/60;
+  }
+  .text-muted {
+    @apply text-cream-100/50;
+  }
+  .text-secondary {
+    @apply text-cream-100/70;
+  }
+}
