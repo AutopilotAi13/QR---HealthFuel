@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Leaf } from 'lucide-react';
+import monogram from '@/assets/HF_Monogram.png';
 import SearchBar from '@/components/SearchBar';
 import CategoryNav from '@/components/CategoryNav';
 import MenuItemRow from '@/components/MenuItemRow';
@@ -71,21 +73,26 @@ export default function MenuPage() {
     <div className="min-h-screen">
       {/* Hero */}
       <section className="max-w-content mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-6 animate-fade-in">
-        <div className="flex flex-col items-center text-center">
-          <div className="flex items-center justify-center gap-2.5 sm:gap-3">
-            <img
-              src={BRAND.logoUrl}
-              alt="Health Fuel monogram"
-              className="w-16 h-16 sm:w-22 sm:h-22 object-contain"
-            />
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
+        <div className="flex items-center justify-center gap-3 sm:gap-5">
+          <img
+            src={monogram}
+            alt="Health Fuel monogram"
+            className="w-[76px] sm:w-[120px] h-auto flex-shrink-0 object-contain"
+          />
+          <div className="min-w-0 text-center">
+            <h1 className="text-[2rem] sm:text-4xl lg:text-5xl font-bold leading-none tracking-tight whitespace-nowrap">
               <span className="text-avocado-500">Health</span>{' '}
               <span className="text-cream-100">Fuel</span>
             </h1>
+            <p className="text-cream-100 text-[0.55rem] sm:text-xs lg:text-sm font-semibold tracking-[0.16em] sm:tracking-[0.22em] uppercase mt-2 whitespace-nowrap">
+              {BRAND.tagline}
+            </p>
+            <div className="flex items-center justify-center gap-2.5 sm:gap-3 mt-3 sm:mt-4">
+              <span className="h-px w-12 sm:w-20 bg-avocado-500" />
+              <Leaf className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-avocado-500" strokeWidth={1.5} />
+              <span className="h-px w-12 sm:w-20 bg-avocado-500" />
+            </div>
           </div>
-          <p className="text-cream-100/50 text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase mt-2">
-            {BRAND.tagline}
-          </p>
         </div>
       </section>
 
