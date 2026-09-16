@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Header from '@/components/Header';
 import SearchBar from '@/components/SearchBar';
 import CategoryNav from '@/components/CategoryNav';
 import MenuItemRow from '@/components/MenuItemRow';
@@ -58,29 +57,33 @@ export default function MenuPage() {
 
   if (loading) return (
     <div className="min-h-screen">
-      <Header />
       <LoadingState message="Loading your nutrition menu..." />
     </div>
   );
 
   if (error) return (
     <div className="min-h-screen">
-      <Header />
       <ErrorState />
     </div>
   );
 
   return (
     <div className="min-h-screen">
-      <Header />
-
       {/* Hero */}
       <section className="max-w-content mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-6 animate-fade-in">
-        <div className="text-center">
-          <h1 className="text-cream-50 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
-            {BRAND.name}
-          </h1>
-          <p className="text-avocado-400 text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase mt-2">
+        <div className="flex flex-col items-center text-center">
+          <div className="flex items-center justify-center gap-2.5 sm:gap-3">
+            <img
+              src={BRAND.logoUrl}
+              alt="Health Fuel monogram"
+              className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+            />
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
+              <span className="text-avocado-500">Health</span>{' '}
+              <span className="text-cream-100">Fuel</span>
+            </h1>
+          </div>
+          <p className="text-cream-100/50 text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase mt-2">
             {BRAND.tagline}
           </p>
         </div>
@@ -92,7 +95,7 @@ export default function MenuPage() {
       </section>
 
       {/* Category Nav (hidden during search) */}
-      {!search && <CategoryNav categories={categories} />}
+      {!search && <CategoryNav categories={categories} hasHeader={false} />}
 
       {/* Content */}
       <main className="max-w-content mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
