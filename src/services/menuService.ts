@@ -92,13 +92,21 @@ export async function searchMenuItems(
   const q = query.toLowerCase().trim();
   if (!q) return [];
   return menuItems
+    .filter((m) => m.active)
+    .map((m) => {
+      const cat = categories.find((c) => c.id === m.category_id);
+      return {
+        item: m,
+        catName: cat?.name.toLowerCase() ?? '',
+      };
+    })
     .filter(
-      (m) =>
-        m.active &&
-        (m.name.toLowerCase().includes(q) ||
-          (m.description?.toLowerCase().includes(q) ?? false)),
+      ({ item, catName }) =>
+        item.name.toLowerCase().includes(q) ||
+        (item.description?.toLowerCase().includes(q) ?? false) ||
+        catName.includes(q),
     )
-    .map(assembleMenuItem);
+    .map(({ item }) => assembleMenuItem(item));
 }
 
 // ── Helpers ──────────────────────────────────────────────────
