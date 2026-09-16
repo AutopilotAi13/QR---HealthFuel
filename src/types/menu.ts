@@ -1,3 +1,5 @@
+import logoAsset from '@/assets/Logo_Health_Fuel.jpg';
+
 // ──────────────────────────────────────────────────────────────
 // Health Fuel — Domain Types
 // These interfaces mirror the Supabase schema 1:1 so the UI
@@ -115,7 +117,7 @@ export interface ComputedMicronutrient {
 export const BRAND = {
   name: 'Health Fuel',
   tagline: 'CURATED NUTRITION. CRAFTED FRESH.',
-  logoUrl: 'https://i.postimg.cc/rwkbbhbN/Logo-Health-Fuel.jpg',
+  logoUrl: logoAsset,
   bottomNote: 'Prepared exclusively with Olive & Coconut Oil',
   nutritionDisclaimer:
     'Nutrition values are estimates based on the current recipe and serving size and may vary.',
