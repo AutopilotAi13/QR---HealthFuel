@@ -104,22 +104,22 @@ export const menuItems: MenuItem[] = [
 
 export const servings: Serving[] = [
   // Salads — two servings each
-  { id: 'srv-010a', menu_item_id: 'mi-010', name: 'One Serving', multiplier: 1, price: 130 },
-  { id: 'srv-010b', menu_item_id: 'mi-010', name: 'Two Servings', multiplier: 2, price: 190 },
-  { id: 'srv-011a', menu_item_id: 'mi-011', name: 'One Serving', multiplier: 1, price: 160 },
-  { id: 'srv-011b', menu_item_id: 'mi-011', name: 'Two Servings', multiplier: 2, price: 220 },
-  { id: 'srv-012a', menu_item_id: 'mi-012', name: 'One Serving', multiplier: 1, price: 140 },
-  { id: 'srv-012b', menu_item_id: 'mi-012', name: 'Two Servings', multiplier: 2, price: 200 },
-  { id: 'srv-013a', menu_item_id: 'mi-013', name: 'One Serving', multiplier: 1, price: 190 },
-  { id: 'srv-013b', menu_item_id: 'mi-013', name: 'Two Servings', multiplier: 2, price: 250 },
+  { id: 'srv-010a', menu_item_id: 'mi-010', name: 'One Serving', multiplier: 1, price: 130, sort_order: 1 },
+  { id: 'srv-010b', menu_item_id: 'mi-010', name: 'Two Servings', multiplier: 2, price: 190, sort_order: 2 },
+  { id: 'srv-011a', menu_item_id: 'mi-011', name: 'One Serving', multiplier: 1, price: 160, sort_order: 1 },
+  { id: 'srv-011b', menu_item_id: 'mi-011', name: 'Two Servings', multiplier: 2, price: 220, sort_order: 2 },
+  { id: 'srv-012a', menu_item_id: 'mi-012', name: 'One Serving', multiplier: 1, price: 140, sort_order: 1 },
+  { id: 'srv-012b', menu_item_id: 'mi-012', name: 'Two Servings', multiplier: 2, price: 200, sort_order: 2 },
+  { id: 'srv-013a', menu_item_id: 'mi-013', name: 'One Serving', multiplier: 1, price: 190, sort_order: 1 },
+  { id: 'srv-013b', menu_item_id: 'mi-013', name: 'Two Servings', multiplier: 2, price: 250, sort_order: 2 },
 
   // Sprout Bowls — two servings each
-  { id: 'srv-030a', menu_item_id: 'mi-030', name: 'One Serving', multiplier: 1, price: 90 },
-  { id: 'srv-030b', menu_item_id: 'mi-030', name: 'Two Servings', multiplier: 2, price: 140 },
-  { id: 'srv-031a', menu_item_id: 'mi-031', name: 'One Serving', multiplier: 1, price: 90 },
-  { id: 'srv-031b', menu_item_id: 'mi-031', name: 'Two Servings', multiplier: 2, price: 140 },
-  { id: 'srv-032a', menu_item_id: 'mi-032', name: 'One Serving', multiplier: 1, price: 90 },
-  { id: 'srv-032b', menu_item_id: 'mi-032', name: 'Two Servings', multiplier: 2, price: 140 },
+  { id: 'srv-030a', menu_item_id: 'mi-030', name: 'One Serving', multiplier: 1, price: 90, sort_order: 1 },
+  { id: 'srv-030b', menu_item_id: 'mi-030', name: 'Two Servings', multiplier: 2, price: 140, sort_order: 2 },
+  { id: 'srv-031a', menu_item_id: 'mi-031', name: 'One Serving', multiplier: 1, price: 90, sort_order: 1 },
+  { id: 'srv-031b', menu_item_id: 'mi-031', name: 'Two Servings', multiplier: 2, price: 140, sort_order: 2 },
+  { id: 'srv-032a', menu_item_id: 'mi-032', name: 'One Serving', multiplier: 1, price: 90, sort_order: 1 },
+  { id: 'srv-032b', menu_item_id: 'mi-032', name: 'Two Servings', multiplier: 2, price: 140, sort_order: 2 },
 
   // All single-serving items
   ...(['mi-001','mi-002','mi-003','mi-004','mi-005','mi-006','mi-007','mi-020','mi-021','mi-022','mi-023','mi-040','mi-041','mi-042','mi-043','mi-050','mi-051','mi-052','mi-053','mi-060','mi-070','mi-071','mi-072','mi-080','mi-081','mi-090','mi-091','mi-092'].map((id, i) => {
@@ -130,6 +130,7 @@ export const servings: Serving[] = [
       name: '1 Serving',
       multiplier: 1,
       price: item.price,
+      sort_order: 1,
     };
   })),
 ];

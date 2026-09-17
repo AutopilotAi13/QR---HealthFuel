@@ -33,6 +33,7 @@ export interface Serving {
   name: string;
   multiplier: number;
   price: number | null;
+  sort_order: number;
 }
 
 export interface Nutrition {
