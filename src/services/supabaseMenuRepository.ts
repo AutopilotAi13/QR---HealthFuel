@@ -14,22 +14,15 @@ import { LocalMenuRepository } from '@/services/localMenuRepository';
 import type { MenuRepository } from '@/services/menuRepository';
 
 // ──────────────────────────────────────────────────────────────
-// SupabaseMenuRepository — reads from Supabase with local fallback
+// SupabaseMenuRepository — Supabase is the ONLY source of truth
 //
-// Implements the same MenuRepository interface as LocalMenuRepository.
-// If a Supabase query fails (network error, missing table, etc.),
-// the method falls back to the local repository so the app stays
-// functional during development.
-//
-// NUTRITION VALUES IN THE DATABASE ARE MOCK V1 PLACEHOLDERS (is_mock=true).
+// When the Supabase client is available, all data comes from
+// Supabase. Query errors propagate to the UI (error state).
+// The local fallback is used ONLY when the Supabase client is
+// not initialized (development without env vars).
 // ──────────────────────────────────────────────────────────────
 
 const localFallback = new LocalMenuRepository();
-
-function requireSupabase() {
-  if (!supabase) throw new Error('Supabase client not initialized');
-  return supabase;
-}
 
 type MenuItemRow = {
   id: string;
@@ -53,154 +46,124 @@ type CategoryRow = {
 
 export class SupabaseMenuRepository implements MenuRepository {
   async getAllCategories(): Promise<Category[]> {
-    try {
-      const { data, error } = await requireSupabase()
-        .from('categories')
-        .select('id, name, slug, sort_order, active')
-        .eq('active', true)
-        .order('sort_order');
-
-      if (error || !data) throw new Error(error?.message ?? 'No data');
-      return data as Category[];
-    } catch {
-      return localFallback.getAllCategories();
-    }
+    if (!supabase) return localFallback.getAllCategories();
+    const { data, error } = await supabase
+      .from('categories')
+      .select('id, name, slug, sort_order, active')
+      .eq('active', true)
+      .order('sort_order');
+    if (error) throw error;
+    return data as Category[];
   }
 
   async getCategoryBySlug(slug: string): Promise<Category | null> {
-    try {
-      const { data, error } = await requireSupabase()
-        .from('categories')
-        .select('id, name, slug, sort_order, active')
-        .eq('slug', slug)
-        .eq('active', true)
-        .maybeSingle();
-
-      if (error) throw new Error(error.message);
-      return (data as Category) ?? null;
-    } catch {
-      return localFallback.getCategoryBySlug(slug);
-    }
+    if (!supabase) return localFallback.getCategoryBySlug(slug);
+    const { data, error } = await supabase
+      .from('categories')
+      .select('id, name, slug, sort_order, active')
+      .eq('slug', slug)
+      .eq('active', true)
+      .maybeSingle();
+    if (error) throw error;
+    return (data as Category) ?? null;
   }
 
   async getAllMenuItems(): Promise<MenuItemWithRelations[]> {
-    try {
-      const { data: items, error } = await requireSupabase()
-        .from('menu_items')
-        .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
-        .eq('active', true)
-        .order('sort_order');
-
-      if (error || !items) throw new Error(error?.message ?? 'No data');
-      return await this.assembleItems(items as MenuItemRow[]);
-    } catch {
-      return localFallback.getAllMenuItems();
-    }
+    if (!supabase) return localFallback.getAllMenuItems();
+    const { data: items, error } = await supabase
+      .from('menu_items')
+      .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
+      .eq('active', true)
+      .order('sort_order');
+    if (error) throw error;
+    return await this.assembleItems(items as MenuItemRow[]);
   }
 
   async getMenuItemsByCategorySlug(slug: string): Promise<MenuItemWithRelations[]> {
-    try {
-      const { data: cat, error: catError } = await requireSupabase()
-        .from('categories')
-        .select('id')
-        .eq('slug', slug)
-        .eq('active', true)
-        .maybeSingle();
+    if (!supabase) return localFallback.getMenuItemsByCategorySlug(slug);
+    const { data: cat, error: catError } = await supabase
+      .from('categories')
+      .select('id')
+      .eq('slug', slug)
+      .eq('active', true)
+      .maybeSingle();
+    if (catError) throw catError;
+    if (!cat) return [];
 
-      if (catError) throw new Error(catError.message);
-      if (!cat) return [];
-
-      const { data: items, error } = await requireSupabase()
-        .from('menu_items')
-        .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
-        .eq('category_id', cat.id)
-        .eq('active', true)
-        .order('sort_order');
-
-      if (error || !items) throw new Error(error?.message ?? 'No data');
-      return await this.assembleItems(items as MenuItemRow[]);
-    } catch {
-      return localFallback.getMenuItemsByCategorySlug(slug);
-    }
+    const { data: items, error } = await supabase
+      .from('menu_items')
+      .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
+      .eq('category_id', cat.id)
+      .eq('active', true)
+      .order('sort_order');
+    if (error) throw error;
+    return await this.assembleItems(items as MenuItemRow[]);
   }
 
   async getMenuItemBySlug(slug: string): Promise<MenuItemWithRelations | null> {
-    try {
-      const { data: item, error } = await requireSupabase()
-        .from('menu_items')
-        .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
-        .eq('slug', slug)
-        .eq('active', true)
-        .maybeSingle();
-
-      if (error) throw new Error(error.message);
-      if (!item) return null;
-      const assembled = await this.assembleItems([item as MenuItemRow]);
-      return assembled[0] ?? null;
-    } catch {
-      return localFallback.getMenuItemBySlug(slug);
-    }
+    if (!supabase) return localFallback.getMenuItemBySlug(slug);
+    const { data: item, error } = await supabase
+      .from('menu_items')
+      .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
+      .eq('slug', slug)
+      .eq('active', true)
+      .maybeSingle();
+    if (error) throw error;
+    if (!item) return null;
+    const assembled = await this.assembleItems([item as MenuItemRow]);
+    return assembled[0] ?? null;
   }
 
   async getFullMenu(): Promise<CategoryWithItems[]> {
-    try {
-      const { data: cats, error: catError } = await requireSupabase()
-        .from('categories')
-        .select('id, name, slug, sort_order, active')
-        .eq('active', true)
-        .order('sort_order');
+    if (!supabase) return localFallback.getFullMenu();
+    const { data: cats, error: catError } = await supabase
+      .from('categories')
+      .select('id, name, slug, sort_order, active')
+      .eq('active', true)
+      .order('sort_order');
+    if (catError) throw catError;
 
-      if (catError || !cats) throw new Error(catError?.message ?? 'No data');
+    const { data: items, error: itemError } = await supabase
+      .from('menu_items')
+      .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
+      .eq('active', true)
+      .order('sort_order');
+    if (itemError) throw itemError;
 
-      const { data: items, error: itemError } = await requireSupabase()
-        .from('menu_items')
-        .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
-        .eq('active', true)
-        .order('sort_order');
+    const itemIds = (items as MenuItemRow[]).map((i) => i.id);
+    const relations = await this.fetchRelations(itemIds);
 
-      if (itemError || !items) throw new Error(itemError?.message ?? 'No data');
-
-      const itemIds = (items as MenuItemRow[]).map((i) => i.id);
-      const relations = await this.fetchRelations(itemIds);
-
-      const assembledByCategory = new Map<string, MenuItemWithRelations[]>();
-      for (const item of items as MenuItemRow[]) {
-        const assembled = this.assembleSingle(item, relations);
-        const list = assembledByCategory.get(item.category_id) ?? [];
-        list.push(assembled);
-        assembledByCategory.set(item.category_id, list);
-      }
-
-      return (cats as CategoryRow[]).map((cat) => ({
-        ...cat,
-        items: assembledByCategory.get(cat.id) ?? [],
-      }));
-    } catch {
-      return localFallback.getFullMenu();
+    const assembledByCategory = new Map<string, MenuItemWithRelations[]>();
+    for (const item of items as MenuItemRow[]) {
+      const assembled = this.assembleSingle(item, relations);
+      const list = assembledByCategory.get(item.category_id) ?? [];
+      list.push(assembled);
+      assembledByCategory.set(item.category_id, list);
     }
+
+    return (cats as CategoryRow[]).map((cat) => ({
+      ...cat,
+      items: assembledByCategory.get(cat.id) ?? [],
+    }));
   }
 
   async searchMenuItems(query: string): Promise<MenuItemWithRelations[]> {
     const q = query.trim();
     if (!q) return [];
+    if (!supabase) return localFallback.searchMenuItems(query);
 
-    try {
-      const { data: items, error } = await requireSupabase()
-        .from('menu_items')
-        .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
-        .eq('active', true)
-        .or(`name.ilike.%${q}%,description.ilike.%${q}%`)
-        .order('sort_order');
+    const { data: items, error } = await supabase
+      .from('menu_items')
+      .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
+      .eq('active', true)
+      .or(`name.ilike.%${q}%,description.ilike.%${q}%`)
+      .order('sort_order');
+    if (error) throw error;
 
-      if (error || !items) throw new Error(error?.message ?? 'No data');
+    const itemIds = (items as MenuItemRow[]).map((i) => i.id);
+    const relations = await this.fetchRelations(itemIds);
 
-      const itemIds = (items as MenuItemRow[]).map((i) => i.id);
-      const relations = await this.fetchRelations(itemIds);
-
-      return (items as MenuItemRow[]).map((item) => this.assembleSingle(item, relations));
-    } catch {
-      return localFallback.searchMenuItems(query);
-    }
+    return (items as MenuItemRow[]).map((item) => this.assembleSingle(item, relations));
   }
 
   // ── Relation fetching ────────────────────────────────────────
@@ -218,23 +181,32 @@ export class SupabaseMenuRepository implements MenuRepository {
       };
     }
 
+    const sb = supabase!;
     const [
-      { data: servings },
-      { data: nutrition },
-      { data: micronutrients },
-      { data: ingredients },
-      { data: dietaryTags },
-      { data: allergens },
-      { data: categories },
+      { data: servings, error: e1 },
+      { data: nutrition, error: e2 },
+      { data: micronutrients, error: e3 },
+      { data: ingredients, error: e4 },
+      { data: dietaryTags, error: e5 },
+      { data: allergens, error: e6 },
+      { data: categories, error: e7 },
     ] = await Promise.all([
-      requireSupabase().from('servings').select('*').in('menu_item_id', itemIds).order('sort_order'),
-      requireSupabase().from('nutrition').select('*').in('menu_item_id', itemIds),
-      requireSupabase().from('micronutrients').select('*').in('menu_item_id', itemIds),
-      requireSupabase().from('ingredients').select('*').in('menu_item_id', itemIds).order('sort_order'),
-      requireSupabase().from('dietary_tags').select('*').in('menu_item_id', itemIds),
-      requireSupabase().from('allergens').select('*').in('menu_item_id', itemIds),
-      requireSupabase().from('categories').select('id, name, slug, sort_order, active'),
+      sb.from('servings').select('*').in('menu_item_id', itemIds).order('sort_order'),
+      sb.from('nutrition').select('*').in('menu_item_id', itemIds),
+      sb.from('micronutrients').select('*').in('menu_item_id', itemIds),
+      sb.from('ingredients').select('*').in('menu_item_id', itemIds).order('sort_order'),
+      sb.from('dietary_tags').select('*').in('menu_item_id', itemIds),
+      sb.from('allergens').select('*').in('menu_item_id', itemIds),
+      sb.from('categories').select('id, name, slug, sort_order, active'),
     ]);
+
+    if (e1) throw e1;
+    if (e2) throw e2;
+    if (e3) throw e3;
+    if (e4) throw e4;
+    if (e5) throw e5;
+    if (e6) throw e6;
+    if (e7) throw e7;
 
     return {
       servings: (servings ?? []) as Serving[],
