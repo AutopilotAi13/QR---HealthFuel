@@ -13,6 +13,7 @@ import {
   nutrition,
   servings,
 } from '@/data/mockData';
+import { SupabaseMenuRepository } from '@/services/supabaseMenuRepository';
 
 // ──────────────────────────────────────────────────────────────
 // Menu Repository — Data Provider Interface
@@ -148,4 +149,4 @@ export class LocalMenuRepository implements MenuRepository {
 // Active provider — swap this single line to switch to Supabase
 // ──────────────────────────────────────────────────────────────
 
-export const menuRepository: MenuRepository = new LocalMenuRepository();
+export const menuRepository: MenuRepository = new SupabaseMenuRepository();

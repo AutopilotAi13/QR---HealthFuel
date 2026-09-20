@@ -47,6 +47,7 @@ export interface Nutrition {
   fiber: number;
   sugar: number;
   sodium: number;
+  is_mock?: boolean;
 }
 
 export interface Micronutrient {

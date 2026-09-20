@@ -153,7 +153,7 @@ function n(
   sug: number,
   sod: number,
 ): Nutrition {
-  return { id, menu_item_id, serving_id, calories: cal, protein: pro, carbohydrates: carb, fat, fiber: fib, sugar: sug, sodium: sod };
+  return { id, menu_item_id, serving_id, calories: cal, protein: pro, carbohydrates: carb, fat, fiber: fib, sugar: sug, sodium: sod, is_mock: true };
 }
 
 export const nutrition: Nutrition[] = [
