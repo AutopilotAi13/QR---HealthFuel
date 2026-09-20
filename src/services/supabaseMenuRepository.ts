@@ -10,7 +10,8 @@ import type {
   Serving,
 } from '@/types/menu';
 import { supabase } from '@/lib/supabase';
-import { LocalMenuRepository, type MenuRepository } from '@/services/menuRepository';
+import { LocalMenuRepository } from '@/services/localMenuRepository';
+import type { MenuRepository } from '@/services/menuRepository';
 
 // ──────────────────────────────────────────────────────────────
 // SupabaseMenuRepository — reads from Supabase with local fallback
@@ -24,6 +25,11 @@ import { LocalMenuRepository, type MenuRepository } from '@/services/menuReposit
 // ──────────────────────────────────────────────────────────────
 
 const localFallback = new LocalMenuRepository();
+
+function requireSupabase() {
+  if (!supabase) throw new Error('Supabase client not initialized');
+  return supabase;
+}
 
 type MenuItemRow = {
   id: string;
@@ -48,7 +54,7 @@ type CategoryRow = {
 export class SupabaseMenuRepository implements MenuRepository {
   async getAllCategories(): Promise<Category[]> {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await requireSupabase()
         .from('categories')
         .select('id, name, slug, sort_order, active')
         .eq('active', true)
@@ -63,7 +69,7 @@ export class SupabaseMenuRepository implements MenuRepository {
 
   async getCategoryBySlug(slug: string): Promise<Category | null> {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await requireSupabase()
         .from('categories')
         .select('id, name, slug, sort_order, active')
         .eq('slug', slug)
@@ -79,7 +85,7 @@ export class SupabaseMenuRepository implements MenuRepository {
 
   async getAllMenuItems(): Promise<MenuItemWithRelations[]> {
     try {
-      const { data: items, error } = await supabase
+      const { data: items, error } = await requireSupabase()
         .from('menu_items')
         .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
         .eq('active', true)
@@ -94,7 +100,7 @@ export class SupabaseMenuRepository implements MenuRepository {
 
   async getMenuItemsByCategorySlug(slug: string): Promise<MenuItemWithRelations[]> {
     try {
-      const { data: cat, error: catError } = await supabase
+      const { data: cat, error: catError } = await requireSupabase()
         .from('categories')
         .select('id')
         .eq('slug', slug)
@@ -104,7 +110,7 @@ export class SupabaseMenuRepository implements MenuRepository {
       if (catError) throw new Error(catError.message);
       if (!cat) return [];
 
-      const { data: items, error } = await supabase
+      const { data: items, error } = await requireSupabase()
         .from('menu_items')
         .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
         .eq('category_id', cat.id)
@@ -120,7 +126,7 @@ export class SupabaseMenuRepository implements MenuRepository {
 
   async getMenuItemBySlug(slug: string): Promise<MenuItemWithRelations | null> {
     try {
-      const { data: item, error } = await supabase
+      const { data: item, error } = await requireSupabase()
         .from('menu_items')
         .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
         .eq('slug', slug)
@@ -138,7 +144,7 @@ export class SupabaseMenuRepository implements MenuRepository {
 
   async getFullMenu(): Promise<CategoryWithItems[]> {
     try {
-      const { data: cats, error: catError } = await supabase
+      const { data: cats, error: catError } = await requireSupabase()
         .from('categories')
         .select('id, name, slug, sort_order, active')
         .eq('active', true)
@@ -146,7 +152,7 @@ export class SupabaseMenuRepository implements MenuRepository {
 
       if (catError || !cats) throw new Error(catError?.message ?? 'No data');
 
-      const { data: items, error: itemError } = await supabase
+      const { data: items, error: itemError } = await requireSupabase()
         .from('menu_items')
         .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
         .eq('active', true)
@@ -179,7 +185,7 @@ export class SupabaseMenuRepository implements MenuRepository {
     if (!q) return [];
 
     try {
-      const { data: items, error } = await supabase
+      const { data: items, error } = await requireSupabase()
         .from('menu_items')
         .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
         .eq('active', true)
@@ -221,13 +227,13 @@ export class SupabaseMenuRepository implements MenuRepository {
       { data: allergens },
       { data: categories },
     ] = await Promise.all([
-      supabase.from('servings').select('*').in('menu_item_id', itemIds).order('sort_order'),
-      supabase.from('nutrition').select('*').in('menu_item_id', itemIds),
-      supabase.from('micronutrients').select('*').in('menu_item_id', itemIds),
-      supabase.from('ingredients').select('*').in('menu_item_id', itemIds).order('sort_order'),
-      supabase.from('dietary_tags').select('*').in('menu_item_id', itemIds),
-      supabase.from('allergens').select('*').in('menu_item_id', itemIds),
-      supabase.from('categories').select('id, name, slug, sort_order, active'),
+      requireSupabase().from('servings').select('*').in('menu_item_id', itemIds).order('sort_order'),
+      requireSupabase().from('nutrition').select('*').in('menu_item_id', itemIds),
+      requireSupabase().from('micronutrients').select('*').in('menu_item_id', itemIds),
+      requireSupabase().from('ingredients').select('*').in('menu_item_id', itemIds).order('sort_order'),
+      requireSupabase().from('dietary_tags').select('*').in('menu_item_id', itemIds),
+      requireSupabase().from('allergens').select('*').in('menu_item_id', itemIds),
+      requireSupabase().from('categories').select('id, name, slug, sort_order, active'),
     ]);
 
     return {
