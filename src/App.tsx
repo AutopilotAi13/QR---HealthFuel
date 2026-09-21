@@ -1,18 +1,37 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from '@/lib/auth';
 import MenuPage from '@/pages/MenuPage';
 import CategoryPage from '@/pages/CategoryPage';
 import ItemDetailPage from '@/pages/ItemDetailPage';
+import AdminLogin from '@/pages/admin/AdminLogin';
+import AdminDashboard from '@/pages/admin/AdminDashboard';
+import AdminItems from '@/pages/admin/AdminItems';
+import AdminItemEditor from '@/pages/admin/AdminItemEditor';
+import AdminCategories from '@/pages/admin/AdminCategories';
+import AdminSettings from '@/pages/admin/AdminSettings';
+import { ProtectedRoute } from '@/components/admin/ProtectedRoute';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/menu" replace />} />
-        <Route path="/menu" element={<MenuPage />} />
-        <Route path="/menu/:category" element={<CategoryPage />} />
-        <Route path="/menu/:category/:slug" element={<ItemDetailPage />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Customer routes */}
+          <Route path="/" element={<Navigate to="/menu" replace />} />
+          <Route path="/menu" element={<MenuPage />} />
+          <Route path="/menu/:category" element={<CategoryPage />} />
+          <Route path="/menu/:category/:slug" element={<ItemDetailPage />} />
+
+          {/* Admin routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/admin/items" element={<ProtectedRoute><AdminItems /></ProtectedRoute>} />
+          <Route path="/admin/items/:id" element={<ProtectedRoute><AdminItemEditor /></ProtectedRoute>} />
+          <Route path="/admin/categories" element={<ProtectedRoute><AdminCategories /></ProtectedRoute>} />
+          <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
