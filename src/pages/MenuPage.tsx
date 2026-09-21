@@ -131,21 +131,23 @@ export default function MenuPage() {
 
         {/* Full Menu */}
         {!search && (
-          <div className="space-y-12 sm:space-y-16">
+          <div className="space-y-10 sm:space-y-14">
             {menu.map((cat) => (
               <section key={cat.id} id={cat.slug} className="animate-slide-up scroll-mt-32">
-                <div className="flex items-baseline justify-between mb-2">
-                  <h2 className="text-cream-50 text-xl sm:text-2xl font-bold tracking-tight">
+                <div className="flex items-baseline justify-between mb-3">
+                  <h2 className="text-cream-50 text-lg sm:text-xl font-bold tracking-tight uppercase">
                     {cat.name}
                   </h2>
-                  <Link
-                    to={`/menu/${cat.slug}`}
-                    className="text-avocado-400 text-xs font-semibold tracking-wider uppercase hover:text-avocado-300 transition-colors"
-                  >
-                    View all
-                  </Link>
+                  {cat.items.length > 3 && (
+                    <Link
+                      to={`/menu/${cat.slug}`}
+                      className="text-avocado-400 text-2xs font-semibold tracking-wider uppercase hover:text-avocado-300 transition-colors"
+                    >
+                      View all
+                    </Link>
+                  )}
                 </div>
-                <div className="w-full h-px bg-avocado-500/15 mb-2" />
+                <div className="w-full h-px bg-avocado-500/15 mb-1" />
                 {cat.items.length > 0 ? (
                   <div>
                     {cat.items.map((item) => (

@@ -13,6 +13,9 @@ export interface Category {
   slug: string;
   sort_order: number;
   active: boolean;
+  published?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface MenuItem {
@@ -25,6 +28,10 @@ export interface MenuItem {
   image_url: string | null;
   active: boolean;
   sort_order: number;
+  published?: boolean;
+  draft_data?: Record<string, unknown> | null;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Serving {
@@ -33,6 +40,7 @@ export interface Serving {
   name: string;
   multiplier: number;
   price: number | null;
+  sort_order: number;
 }
 
 export interface Nutrition {
@@ -46,6 +54,7 @@ export interface Nutrition {
   fiber: number;
   sugar: number;
   sodium: number;
+  is_mock?: boolean;
 }
 
 export interface Micronutrient {
@@ -113,7 +122,18 @@ export interface ComputedMicronutrient {
   unit: string;
 }
 
-// Brand constant
+export interface Settings {
+  id: number;
+  brand_name: string;
+  tagline: string;
+  currency: string;
+  oil_statement: string;
+  nutrition_disclaimer: string;
+  nutrition_last_updated: string;
+  updated_at?: string;
+}
+
+// Brand constant — fallback values, overridden by Supabase settings at runtime
 export const BRAND = {
   name: 'Health Fuel',
   tagline: 'CURATED NUTRITION. CRAFTED FRESH.',
