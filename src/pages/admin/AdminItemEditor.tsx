@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Save, Trash2, Plus, X, ArrowLeft, Eye, Upload, Clock } from 'lucide-react';
+import { Save, Trash2, Plus, X, ArrowLeft, Eye, Clock, ExternalLink } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import {
   adminGetMenuItem,
@@ -55,7 +55,9 @@ export default function AdminItemEditor() {
   const [active, setActive] = useState(true);
   const [sortOrder, setSortOrder] = useState(0);
   const [published, setPublished] = useState(true);
+  const [temporarilyUnavailable, setTemporarilyUnavailable] = useState(false);
   const [updatedAt, setUpdatedAt] = useState('');
+  const [itemSlug, setItemSlug] = useState('');
 
   // Relations
   const [servings, setServings] = useState<Serving[]>([]);
@@ -91,6 +93,8 @@ export default function AdminItemEditor() {
     setActive(item.active);
     setSortOrder(item.sort_order);
     setPublished(item.published);
+    setTemporarilyUnavailable(item.temporarily_unavailable ?? false);
+    setItemSlug(item.slug);
     setUpdatedAt(item.updated_at);
     setServings(srvs);
     setNutrition(nuts);
@@ -122,6 +126,7 @@ export default function AdminItemEditor() {
         active,
         sort_order: Number(sortOrder),
         published,
+        temporarily_unavailable: temporarilyUnavailable,
       };
 
       if (isNew) {
@@ -290,6 +295,16 @@ export default function AdminItemEditor() {
               <Eye className="w-4 h-4" /> Publish
             </button>
           )}
+          {!isNew && itemSlug && (
+            <a
+              href={`/menu/${cats.find((c) => c.id === categoryId)?.slug ?? ''}/${itemSlug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-cream-100/40 hover:text-avocado-400 text-sm font-medium rounded-lg px-3 py-2 transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" /> Preview
+            </a>
+          )}
           {!isNew && (
             <button
               onClick={handleDelete}
@@ -312,6 +327,12 @@ export default function AdminItemEditor() {
         <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 mb-6 flex items-center gap-2">
           <Clock className="w-4 h-4 text-amber-400/70" />
           <p className="text-amber-300/80 text-sm">This item is currently a draft and not visible to customers.</p>
+        </div>
+      )}
+      {!isNew && temporarilyUnavailable && (
+        <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl p-3 mb-6 flex items-center gap-2">
+          <Clock className="w-4 h-4 text-orange-400/70" />
+          <p className="text-orange-300/80 text-sm">This item is marked temporarily unavailable — customers will see it as unavailable.</p>
         </div>
       )}
 
@@ -359,6 +380,10 @@ export default function AdminItemEditor() {
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="accent-avocado-500" />
                 <span className="text-cream-100/70 text-sm">Published</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={temporarilyUnavailable} onChange={(e) => setTemporarilyUnavailable(e.target.checked)} className="accent-avocado-500" />
+                <span className="text-cream-100/70 text-sm">Temp. Unavailable</span>
               </label>
             </div>
           </div>

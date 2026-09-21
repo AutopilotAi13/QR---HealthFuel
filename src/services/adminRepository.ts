@@ -67,6 +67,7 @@ type MenuItemRow = {
   sort_order: number;
   published: boolean;
   draft_data: Record<string, unknown> | null;
+  temporarily_unavailable: boolean;
   created_at: string;
   updated_at: string;
 };
