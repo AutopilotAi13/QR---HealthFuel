@@ -7,6 +7,7 @@ interface AuthContextValue {
   user: User | null;
   isAdmin: boolean;
   loading: boolean;
+  authError: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -17,16 +18,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [authError, setAuthError] = useState(false);
+
   useEffect(() => {
     if (!supabase) {
       setLoading(false);
       return;
     }
 
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setLoading(false);
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        setSession(data.session);
+      })
+      .catch(() => {
+        setAuthError(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
@@ -50,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ session, user, isAdmin, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ session, user, isAdmin, loading, authError, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
