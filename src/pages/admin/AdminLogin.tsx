@@ -18,8 +18,13 @@ export default function AdminLogin() {
     try {
       await signIn(email, password);
       navigate('/admin');
-    } catch {
-      setError('Invalid credentials. Please check your email and password.');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      if (msg === 'Supabase not configured') {
+        setError('Authentication service is not configured. Please contact support.');
+      } else {
+        setError('Invalid credentials. Please check your email and password.');
+      }
     } finally {
       setLoading(false);
     }
