@@ -133,18 +133,24 @@ export default function AdminItemEditor() {
         const created = await adminCreateMenuItem(payload);
         navigate(`/admin/items/${created.id}`, { replace: true });
       } else {
-        await adminUpdateMenuItem(id!, payload);
         const newPrice = Number(price);
-        const servingsToUpdate = servings.filter((s) => s.multiplier === 1 && s.price !== newPrice);
+        const servingsToUpdate = servings.filter(
+          (s) => s.multiplier === 1 && s.price !== newPrice
+        );
         await Promise.all(
           servingsToUpdate.map((s) =>
             adminUpdateServing(s.id, { price: newPrice } as Partial<Serving>)
           )
         );
+        await adminUpdateMenuItem(id!, payload);
         await loadAll();
       }
     } catch (e) {
-      alert('Failed to save item');
+      alert(
+        e instanceof Error && e.message
+          ? `Failed to save: ${e.message}`
+          : 'Failed to save item'
+      );
     } finally {
       setSaving(false);
     }
