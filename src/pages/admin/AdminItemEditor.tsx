@@ -134,6 +134,13 @@ export default function AdminItemEditor() {
         navigate(`/admin/items/${created.id}`, { replace: true });
       } else {
         await adminUpdateMenuItem(id!, payload);
+        const newPrice = Number(price);
+        const servingsToUpdate = servings.filter((s) => s.multiplier === 1 && s.price !== newPrice);
+        await Promise.all(
+          servingsToUpdate.map((s) =>
+            adminUpdateServing(s.id, { price: newPrice } as Partial<Serving>)
+          )
+        );
         await loadAll();
       }
     } catch (e) {
