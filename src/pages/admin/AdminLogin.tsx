@@ -1,5 +1,5 @@
-import { useState, type ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { Loader2, Lock } from 'lucide-react';
 
@@ -98,14 +98,5 @@ export default function AdminLogin() {
         </p>
       </div>
     </div>
-  );
-}
-
-function Link({ to, children, className }: { to: string; children: ReactNode; className?: string }) {
-  const navigate = useNavigate();
-  return (
-    <button onClick={() => navigate(to)} className={className}>
-      {children}
-    </button>
   );
 }

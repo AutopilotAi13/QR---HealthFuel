@@ -10,19 +10,7 @@ import type {
   Serving,
 } from '@/types/menu';
 import { supabase } from '@/lib/supabase';
-import { LocalMenuRepository } from '@/services/localMenuRepository';
 import type { MenuRepository } from '@/services/menuRepository';
-
-// ──────────────────────────────────────────────────────────────
-// SupabaseMenuRepository — Supabase is the ONLY source of truth
-//
-// When the Supabase client is available, all data comes from
-// Supabase. Query errors propagate to the UI (error state).
-// The local fallback is used ONLY when the Supabase client is
-// not initialized (development without env vars).
-// ──────────────────────────────────────────────────────────────
-
-const localFallback = new LocalMenuRepository();
 
 type MenuItemRow = {
   id: string;
@@ -46,7 +34,6 @@ type CategoryRow = {
 
 export class SupabaseMenuRepository implements MenuRepository {
   async getAllCategories(): Promise<Category[]> {
-    if (!supabase) return localFallback.getAllCategories();
     const { data, error } = await supabase
       .from('categories')
       .select('id, name, slug, sort_order, active')
@@ -57,7 +44,6 @@ export class SupabaseMenuRepository implements MenuRepository {
   }
 
   async getCategoryBySlug(slug: string): Promise<Category | null> {
-    if (!supabase) return localFallback.getCategoryBySlug(slug);
     const { data, error } = await supabase
       .from('categories')
       .select('id, name, slug, sort_order, active')
@@ -69,7 +55,6 @@ export class SupabaseMenuRepository implements MenuRepository {
   }
 
   async getAllMenuItems(): Promise<MenuItemWithRelations[]> {
-    if (!supabase) return localFallback.getAllMenuItems();
     const { data: items, error } = await supabase
       .from('menu_items')
       .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
@@ -80,7 +65,6 @@ export class SupabaseMenuRepository implements MenuRepository {
   }
 
   async getMenuItemsByCategorySlug(slug: string): Promise<MenuItemWithRelations[]> {
-    if (!supabase) return localFallback.getMenuItemsByCategorySlug(slug);
     const { data: cat, error: catError } = await supabase
       .from('categories')
       .select('id')
@@ -101,7 +85,6 @@ export class SupabaseMenuRepository implements MenuRepository {
   }
 
   async getMenuItemBySlug(slug: string): Promise<MenuItemWithRelations | null> {
-    if (!supabase) return localFallback.getMenuItemBySlug(slug);
     const { data: item, error } = await supabase
       .from('menu_items')
       .select('id, category_id, name, slug, description, price, image_url, active, sort_order')
@@ -115,7 +98,6 @@ export class SupabaseMenuRepository implements MenuRepository {
   }
 
   async getFullMenu(): Promise<CategoryWithItems[]> {
-    if (!supabase) return localFallback.getFullMenu();
     const { data: cats, error: catError } = await supabase
       .from('categories')
       .select('id, name, slug, sort_order, active')
@@ -150,7 +132,6 @@ export class SupabaseMenuRepository implements MenuRepository {
   async searchMenuItems(query: string): Promise<MenuItemWithRelations[]> {
     const q = query.trim();
     if (!q) return [];
-    if (!supabase) return localFallback.searchMenuItems(query);
 
     const { data: items, error } = await supabase
       .from('menu_items')
@@ -181,7 +162,6 @@ export class SupabaseMenuRepository implements MenuRepository {
       };
     }
 
-    const sb = supabase!;
     const [
       { data: servings, error: e1 },
       { data: nutrition, error: e2 },
@@ -191,13 +171,13 @@ export class SupabaseMenuRepository implements MenuRepository {
       { data: allergens, error: e6 },
       { data: categories, error: e7 },
     ] = await Promise.all([
-      sb.from('servings').select('*').in('menu_item_id', itemIds).order('sort_order'),
-      sb.from('nutrition').select('*').in('menu_item_id', itemIds),
-      sb.from('micronutrients').select('*').in('menu_item_id', itemIds),
-      sb.from('ingredients').select('*').in('menu_item_id', itemIds).order('sort_order'),
-      sb.from('dietary_tags').select('*').in('menu_item_id', itemIds),
-      sb.from('allergens').select('*').in('menu_item_id', itemIds),
-      sb.from('categories').select('id, name, slug, sort_order, active'),
+      supabase.from('servings').select('*').in('menu_item_id', itemIds).order('sort_order'),
+      supabase.from('nutrition').select('*').in('menu_item_id', itemIds),
+      supabase.from('micronutrients').select('*').in('menu_item_id', itemIds),
+      supabase.from('ingredients').select('*').in('menu_item_id', itemIds).order('sort_order'),
+      supabase.from('dietary_tags').select('*').in('menu_item_id', itemIds),
+      supabase.from('allergens').select('*').in('menu_item_id', itemIds),
+      supabase.from('categories').select('id, name, slug, sort_order, active'),
     ]);
 
     if (e1) throw e1;
