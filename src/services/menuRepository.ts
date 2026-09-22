@@ -23,8 +23,6 @@ export interface MenuRepository {
   searchMenuItems(query: string): Promise<MenuItemWithRelations[]>;
 }
 
-export { LocalMenuRepository } from '@/services/localMenuRepository';
-
 // ──────────────────────────────────────────────────────────────
 // Active provider — Supabase (single source of truth)
 // ──────────────────────────────────────────────────────────────
