@@ -31,7 +31,7 @@ export default function MenuItemRow({ item }: MenuItemRowProps) {
                 <span className="text-cream-100/40 text-2xs font-normal">– ₹{Math.max(...prices)}</span>
               </span>
             ) : (
-              `₹${prices[0] ?? item.price}`
+              `₹${item.price}`
             )}
           </span>
         </div>

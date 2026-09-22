@@ -94,7 +94,7 @@ export default function ItemDetailPage() {
             </p>
           )}
           <p className="text-cream-50 text-2xl font-bold mt-4">
-            ₹{selectedServing?.price ?? item.price}
+            ₹{item.servings.length > 1 ? (selectedServing?.price ?? item.price) : item.price}
           </p>
         </div>
 
