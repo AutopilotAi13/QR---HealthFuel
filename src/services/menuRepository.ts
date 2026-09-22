@@ -10,9 +10,7 @@ import { SupabaseMenuRepository } from '@/services/supabaseMenuRepository';
 //
 // This interface defines the contract between the application
 // and its data source. The active implementation (SupabaseMenuRepository)
-// reads from Supabase with automatic fallback to LocalMenuRepository.
-//
-// NUTRITION VALUES IN THE LOCAL DATA ARE MOCK V1 PLACEHOLDERS.
+// reads from Supabase, which is the single source of truth.
 // ──────────────────────────────────────────────────────────────
 
 export interface MenuRepository {
@@ -28,7 +26,7 @@ export interface MenuRepository {
 export { LocalMenuRepository } from '@/services/localMenuRepository';
 
 // ──────────────────────────────────────────────────────────────
-// Active provider — Supabase with local fallback
+// Active provider — Supabase (single source of truth)
 // ──────────────────────────────────────────────────────────────
 
 export const menuRepository: MenuRepository = new SupabaseMenuRepository();
