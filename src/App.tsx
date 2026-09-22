@@ -10,6 +10,7 @@ import AdminItemEditor from '@/pages/admin/AdminItemEditor';
 import AdminCategories from '@/pages/admin/AdminCategories';
 import AdminSettings from '@/pages/admin/AdminSettings';
 import { ProtectedRoute } from '@/components/admin/ProtectedRoute';
+import { AdminErrorBoundary } from '@/components/admin/AdminErrorBoundary';
 
 function App() {
   return (
@@ -23,12 +24,12 @@ function App() {
           <Route path="/menu/:category/:slug" element={<ItemDetailPage />} />
 
           {/* Admin routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-          <Route path="/admin/items" element={<ProtectedRoute><AdminItems /></ProtectedRoute>} />
-          <Route path="/admin/items/:id" element={<ProtectedRoute><AdminItemEditor /></ProtectedRoute>} />
-          <Route path="/admin/categories" element={<ProtectedRoute><AdminCategories /></ProtectedRoute>} />
-          <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
+          <Route path="/admin/login" element={<AdminErrorBoundary><AdminLogin /></AdminErrorBoundary>} />
+          <Route path="/admin" element={<AdminErrorBoundary><ProtectedRoute><AdminDashboard /></ProtectedRoute></AdminErrorBoundary>} />
+          <Route path="/admin/items" element={<AdminErrorBoundary><ProtectedRoute><AdminItems /></ProtectedRoute></AdminErrorBoundary>} />
+          <Route path="/admin/items/:id" element={<AdminErrorBoundary><ProtectedRoute><AdminItemEditor /></ProtectedRoute></AdminErrorBoundary>} />
+          <Route path="/admin/categories" element={<AdminErrorBoundary><ProtectedRoute><AdminCategories /></ProtectedRoute></AdminErrorBoundary>} />
+          <Route path="/admin/settings" element={<AdminErrorBoundary><ProtectedRoute><AdminSettings /></ProtectedRoute></AdminErrorBoundary>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
