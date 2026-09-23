@@ -1,34 +1,41 @@
 import { Link } from 'react-router-dom';
 import type { Category } from '@/types/menu';
 import {
-  UtensilsCrossed,
-  Salad,
-  Soup,
-  Sprout,
-  Sandwich,
-  GlassWater,
-  CupSoda,
-  Cookie,
-  Syringe,
-  CircleDot,
-  type LucideIcon,
-} from 'lucide-react';
+  MealsIcon,
+  SaladsIcon,
+  ProteinBowlsIcon,
+  SproutBowlsIcon,
+  ProteinSandwichesIcon,
+  SmoothieIcon,
+  CornIcon,
+  DrinksIcon,
+  DessertBarIcon,
+  DetoxShotIcon,
+  DefaultCategoryIcon,
+} from '@/components/icons/CategoryIcons';
+import type { SVGProps } from 'react';
 
-const categoryIcons: Array<{ match: string; icon: LucideIcon }> = [
-  { match: 'meal', icon: UtensilsCrossed },
-  { match: 'salad', icon: Salad },
-  { match: 'protein bowl', icon: Soup },
-  { match: 'sprout bowl', icon: Sprout },
-  { match: 'protein sandwich', icon: Sandwich },
-  { match: 'smooth', icon: GlassWater },
-  { match: 'drink', icon: CupSoda },
-  { match: 'dessert', icon: Cookie },
-  { match: 'detox', icon: Syringe },
+type IconComponent = (props: SVGProps<SVGSVGElement>) => JSX.Element;
+
+const categoryIconMap: Array<{ match: string; Icon: IconComponent }> = [
+  { match: 'meal', Icon: MealsIcon },
+  { match: 'salad', Icon: SaladsIcon },
+  { match: 'protein bowl', Icon: ProteinBowlsIcon },
+  { match: 'sprout bowl', Icon: SproutBowlsIcon },
+  { match: 'protein sandwich', Icon: ProteinSandwichesIcon },
+  { match: 'sandwich', Icon: ProteinSandwichesIcon },
+  { match: 'smoothie', Icon: SmoothieIcon },
+  { match: 'corn', Icon: CornIcon },
+  { match: 'drink', Icon: DrinksIcon },
+  { match: 'dessert', Icon: DessertBarIcon },
+  { match: 'no-bake', Icon: DessertBarIcon },
+  { match: 'detox', Icon: DetoxShotIcon },
+  { match: 'shot', Icon: DetoxShotIcon },
 ];
 
-function getCategoryIcon(category: Category): LucideIcon {
+function getCategoryIcon(category: Category): IconComponent {
   const label = `${category.name} ${category.slug}`.toLowerCase();
-  return categoryIcons.find(({ match }) => label.includes(match))?.icon ?? CircleDot;
+  return categoryIconMap.find(({ match }) => label.includes(match))?.Icon ?? DefaultCategoryIcon;
 }
 
 interface CategoryNavProps {
@@ -60,7 +67,7 @@ export default function CategoryNav({ categories, activeSlug, hasHeader = true }
                     }
                   `}
                 >
-                  <Icon className="w-6 h-6 sm:w-6.5 sm:h-6.5" strokeWidth={1.35} />
+                  <Icon className="w-6 h-6" />
                 </span>
                 <span
                   className={`

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Target, BarChart3, UtensilsCrossed, ArrowLeft, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
 import Header from '@/components/Header';
+import { supabase } from '@/lib/supabase';
 
 type Goal = 'Weight Loss' | 'Weight Gain' | 'Maintenance' | 'General Fitness';
 
@@ -40,9 +41,34 @@ export default function PersonalizedNutritionPage() {
     }
 
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setSubmitting(false);
-    setSubmitted(true);
+
+    try {
+      const { error: insertError } = await supabase
+        .from('personalized_nutrition_early_access')
+        .insert({
+          name: name.trim(),
+          email: email.trim(),
+          age: ageNum,
+          gender,
+          goal,
+          phone: phone.trim() || null,
+        });
+
+      if (insertError) {
+        if (insertError.code === '23505') {
+          setError('This email is already registered for early access.');
+        } else {
+          setError('Could not submit your request. Please try again.');
+        }
+        return;
+      }
+
+      setSubmitted(true);
+    } catch {
+      setError('Could not submit your request. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   const points = [
