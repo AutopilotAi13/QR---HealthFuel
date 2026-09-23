@@ -4,6 +4,7 @@ import { Leaf } from 'lucide-react';
 import monogram from '@/assets/HF_Monogram.png';
 import SearchBar from '@/components/SearchBar';
 import CategoryNav from '@/components/CategoryNav';
+import PersonalizedNutritionBanner from '@/components/PersonalizedNutritionBanner';
 import MenuItemRow from '@/components/MenuItemRow';
 import { LoadingState, EmptyState, ErrorState } from '@/components/StateViews';
 import { getFullMenu, searchMenuItems } from '@/services/menuService';
@@ -95,6 +96,9 @@ export default function MenuPage() {
           </div>
         </div>
       </section>
+
+      {/* Personalized Nutrition banner */}
+      <PersonalizedNutritionBanner />
 
       {/* Search */}
       <section className="max-w-content mx-auto px-4 sm:px-6 lg:px-8 pb-4">

@@ -3,6 +3,7 @@ import { AuthProvider } from '@/lib/auth';
 import MenuPage from '@/pages/MenuPage';
 import CategoryPage from '@/pages/CategoryPage';
 import ItemDetailPage from '@/pages/ItemDetailPage';
+import PersonalizedNutritionPage from '@/pages/PersonalizedNutritionPage';
 import AdminLogin from '@/pages/admin/AdminLogin';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminItems from '@/pages/admin/AdminItems';
@@ -22,6 +23,7 @@ function App() {
           <Route path="/menu" element={<MenuPage />} />
           <Route path="/menu/:category" element={<CategoryPage />} />
           <Route path="/menu/:category/:slug" element={<ItemDetailPage />} />
+          <Route path="/personalized-nutrition" element={<PersonalizedNutritionPage />} />
 
           {/* Admin routes */}
           <Route path="/admin/login" element={<AdminErrorBoundary><AdminLogin /></AdminErrorBoundary>} />
